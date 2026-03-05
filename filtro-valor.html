@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preguntas Frecuentes - Flujo Vertical</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  
+  body{
+    font-family: 'Montserrat', sans-serif;
+    color:white;
+    background:#050b18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  /* 🌌 FONDO */
+  .galaxy{ position:fixed; width:100%; height:100%; top:0; left:0; z-index:-1; }
+  .nebula{
+    position:absolute; width:100%; height:100%;
+    background: radial-gradient(circle at 20% 30%, rgba(138,43,226,0.15), transparent 40%);
+    filter:blur(90px);
+  }
+
+  .btn-back {
+    position: absolute; top: 20px; left: 20px;
+    color: #d4af37; text-decoration: none; font-size: 13px;
+    border: 1px solid #d4af37; padding: 10px 25px; border-radius: 50px;
+    z-index: 100;
+    transition: 0.3s;
+  }
+  .btn-back:hover { background:#d4af37; color:#050b18; transform: scale(1.05); }
+
+  header { text-align: center; padding: 60px 20px 20px; }
+  h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 32px; }
+
+  /* 🐍 CONTENEDOR VERTICAL */
+  .snake-game-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px; 
+    height: 900px; 
+    margin: 20px auto;
+  }
+
+  .snake-svg { width: 100%; height: 100%; }
+
+  .snake-path { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 12; stroke-linecap: round; }
+  .snake-progress {
+    fill: none; stroke: #00ff66; stroke-width: 12; stroke-linecap: round;
+    stroke-dasharray: 3000; stroke-dashoffset: 3000;
+    transition: stroke-dashoffset 0.8s ease;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 102, 0.5));
+  }
+
+  /* 🟢 CÍRCULOS */
+  .step-circle {
+    width: 50px; height: 50px; border-radius: 50%;
+    border: 2px solid #00ff66; background: #050b18;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: white; position: absolute;
+    cursor: pointer; transition: 0.3s; z-index: 5;
+  }
+  .step-circle.active {
+    background: #00ff66; color: #050b18;
+    box-shadow: 0 0 20px rgba(0, 255, 102, 0.7);
+    transform: scale(1.1);
+  }
+
+  /* 📦 CUADRO FLOTANTE PEQUEÑO */
+  .response-box-game {
+    position: fixed;
+    width: 320px;
+    max-width: 90%;
+    padding: 20px;
+    background: rgba(10, 20, 40, 0.95);
+    backdrop-filter: blur(10px);
+    border: 2px solid #d4af37;
+    border-radius: 15px;
+    color: #fff;
+    display: none;
+    z-index: 1000;
+    text-align: left;
+    opacity: 0;
+    transition: opacity 0.3s;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .response-box-game.show { display: block; opacity: 1; }
+  .response-box-game h3 { color: #d4af37; font-size: 18px; margin-bottom: 10px; font-family: 'Playfair Display', serif; }
+  .response-box-game p { font-size: 14px; line-height: 1.4; color: #cbd5e0; margin-bottom: 8px; }
+  .correct { border-left: 3px solid #00ff66; padding-left: 8px; margin-bottom: 5px; color: #00ff66; }
+  .incorrect { border-left: 3px solid #ff4d4d; padding-left: 8px; color: #ff4d4d; }
+
+  /* BOTÓN CERRAR */
+  .close-btn {
+    margin-top: 12px;
+    padding: 8px 15px;
+    background: #d4af37;
+    color: #050b18;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    float: right;
+    transition: 0.3s;
+  }
+  .close-btn:hover { background:#00ff66; color:#050b18; }
+
+  footer { padding: 30px; opacity: 0.4; font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="galaxy"><div class="nebula"></div></div>
+<a href="tucan.html" class="btn-back">← Volver</a>
+
+<header>
+  <h1>PREGUNTAS FRECUENTES</h1>
+</header>
+
+<div class="snake-game-container">
+  <svg class="snake-svg" viewBox="0 0 400 900">
+    <path id="snake-bg" class="snake-path" d="M 100 50 C 350 50, 350 200, 200 200 C 50 200, 50 350, 200 350 C 350 350, 350 500, 200 500 C 50 500, 50 650, 200 650 C 350 650, 350 800, 100 800" />
+    <path id="snake-progress" class="snake-progress" d="M 100 50 C 350 50, 350 200, 200 200 C 50 200, 50 350, 200 350 C 350 350, 350 500, 200 500 C 50 500, 50 650, 200 650 C 350 650, 350 800, 100 800" />
+  </svg>
+
+  <div class="step-circle" style="top: 25px; left: 75px;" onclick="toggleStep(0, this)">1</div>
+  <div class="step-circle" style="top: 175px; left: 175px;" onclick="toggleStep(1, this)">2</div>
+  <div class="step-circle" style="top: 325px; left: 175px;" onclick="toggleStep(2, this)">3</div>
+  <div class="step-circle" style="top: 475px; left: 175px;" onclick="toggleStep(3, this)">4</div>
+  <div class="step-circle" style="top: 625px; left: 175px;" onclick="toggleStep(4, this)">5</div>
+  <div class="step-circle" style="top: 775px; left: 75px;" onclick="toggleStep(5, this)">6</div>
+
+  <div id="game-info-modal" class="response-box-game">
+    <h3 id="modal-title"></h3>
+    <div id="modal-content"></div>
+    <button class="close-btn" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<footer>© 2026 - Universidad Simón Bolívar</footer>
+
+<script>
+const questions = [
+  { t: "1️⃣ HÁBLAME DE TI", c: `<p>🎯 Propósito: Evaluar síntesis, claridad y perfil profesional.</p>
+  <div class='correct'>✅ Correcta: “Soy un profesional responsable y comprometido con el cumplimiento de objetivos. Cuento con experiencia en mi área de formación, donde he desarrollado habilidades como el trabajo en equipo, la organización y la resolución de problemas. Me caracterizo por mi disposición al aprendizaje continuo y mi capacidad de adaptación a nuevos entornos laborales.”</div>
+  <div class='incorrect'>❌ Incorrecta: “Bueno… nací en Barranquilla, tengo 24 años, vivo con mis papás y me gusta salir con mis amigos.”</div>
+  <p>🔎 Error: Habla de vida personal y no del perfil profesional.</p>` },
+
+  { t: "2️⃣ ¿CUÁLES SON TUS FORTALEZAS?", c: `<p>🎯 Propósito: Identificar competencias clave.</p>
+  <div class='correct'>✅ Correcta: “Entre mis principales fortalezas destaco la responsabilidad, la organización y la capacidad de análisis. Me adapto con facilidad a los cambios y mantengo una actitud proactiva frente a los retos.”</div>
+  <div class='incorrect'>❌ Incorrecta: “Soy perfeccionista… demasiado perfeccionista.”</div>
+  <p>🔎 Error: Respuesta cliché y poco profunda, sin ejemplo ni contexto.</p>` },
+
+  { t: "3️⃣ ¿CUÁLES SON TUS DEBILIDADES?", c: `<p>🎯 Propósito: Evaluar autoconocimiento.</p>
+  <div class='correct'>✅ Correcta: “En el pasado tendía a asumir demasiadas responsabilidades para asegurar resultados. Sin embargo, he aprendido a delegar y confiar en el equipo, lo que ha mejorado mi gestión del tiempo.”</div>
+  <div class='incorrect'>❌ Incorrecta: “No tengo debilidades.”</div>
+  <p>🔎 Error: Falta de autocrítica y poca credibilidad.</p>` },
+
+  { t: "4️⃣ ¿POR QUÉ QUIERES TRABAJAR AQUÍ?", c: `<p>🎯 Propósito: Medir interés y conocimiento de la empresa.</p>
+  <div class='correct'>✅ Correcta: “Me interesa formar parte de esta organización por su reconocimiento y compromiso con la calidad. Considero que mis habilidades pueden aportar al equipo y esta oportunidad representa crecimiento profesional.”</div>
+  <div class='incorrect'>❌ Incorrecta: “Porque necesito el trabajo.”</div>
+  <p>🔎 Error: Enfoque solo personal, sin conexión con la empresa.</p>` },
+
+  { t: "5️⃣ ¿POR QUÉ DEBERÍAMOS CONTRATARTE?", c: `<p>🎯 Propósito: Evaluar diferenciación.</p>
+  <div class='correct'>✅ Correcta: “Además de cumplir con los requisitos técnicos, aporto compromiso, ética profesional y disposición para asumir nuevos retos. Me enfoco en resultados y en contribuir positivamente al clima laboral.”</div>
+  <div class='incorrect'>❌ Incorrecta: “Porque soy el mejor.”</div>
+  <p>🔎 Error: Afirmación sin argumento ni respaldo.</p>` },
+
+  { t: "6️⃣ ¿DÓNDE TE VES EN CINCO AÑOS?", c: `<p>🎯 Propósito: Evaluar estabilidad y proyección.</p>
+  <div class='correct'>✅ Correcta: “Me visualizo creciendo profesionalmente dentro de una organización, asumiendo mayores responsabilidades y fortaleciendo mis competencias para aportar al cumplimiento de objetivos institucionales.”</div>
+  <div class='incorrect'>❌ Incorrecta: “No sé… nunca pienso tan lejos.”</div>
+  <p>🔎 Error: Falta de proyección y planificación.</p>` }
+];
+
+let activeStep = null;
+
+function toggleStep(i, el) {
+  const modal = document.getElementById('game-info-modal');
+
+  if(activeStep === i){
+    closeModal();
+    return;
+  }
+
+  document.getElementById('modal-title').innerText = questions[i].t;
+  document.getElementById('modal-content').innerHTML = questions[i].c;
+
+  modal.classList.add('show');
+
+  document.querySelectorAll('.step-circle').forEach((c, idx) => {
+    idx <= i ? c.classList.add('active') : c.classList.remove('active');
+  });
+
+  const progress = document.getElementById('snake-progress');
+  progress.style.strokeDashoffset = 3000 * (1 - (i + 1) / 6);
+
+  activeStep = i;
+}
+
+function closeModal(){
+  const modal = document.getElementById('game-info-modal');
+  modal.classList.remove('show');
+  activeStep = null;
+  document.querySelectorAll('.step-circle').forEach(c => c.classList.remove('active'));
+}
+</script>
+</body>
+</html>
